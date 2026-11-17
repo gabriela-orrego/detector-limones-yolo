@@ -1,0 +1,7 @@
+ultralytics==8.4.153
+optuna
+roboflow
+opencv-python
+pandas
+matplotlib
+pyyaml

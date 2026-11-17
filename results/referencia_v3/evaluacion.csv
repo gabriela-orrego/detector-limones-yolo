@@ -1,0 +1,4 @@
+conjunto,imágenes,precisión,recobrado,mAP50,mAP50-95
+propio_20 (valid+test),20,0.929,0.922,0.952,0.746
+propio_test,10,0.960,0.862,0.938,0.723
+base_valid,227,0.780,0.769,0.843,0.554

@@ -1,0 +1,7 @@
+dataset,conjunto,imágenes,limones,imágenes descartadas
+base,train,668,963,1452
+base,valid,227,316,499
+base,test,20,36,38
+propio,train (30 fotos x3),90,175,0
+propio,valid,10,58,0
+propio,test,10,58,0
