@@ -6,7 +6,7 @@ Las imágenes no se guardan en el repositorio: se descargan de Roboflow Universe
 | Dataset | Fuente | Contenido |
 |---|---|---|
 | Base | [brinjalproject/lemons-segmentation](https://universe.roboflow.com/brinjalproject/lemons-segmentation), versión 5 | Limones en el árbol, etiquetados con polígonos en 3 clases. Se usa solo la clase de limones amarillos: 915 imágenes, 1 315 limones |
-| Propio | [hectors-workspace-e5dhh/limones-amarillos](https://universe.roboflow.com/hectors-workspace-e5dhh/limones-amarillos), versión 3 (CC BY 4.0) | 50 fotos de un limonero en maceta, 244 limones etiquetados con cajas: 30 train / 10 valid / 10 test |
+| Propio | [hectors-workspace-e5dhh/limones-amarillos](https://universe.roboflow.com/hectors-workspace-e5dhh/limones-amarillos), versión 3 (CC BY 4.0) | 50 fotos de un limonero en maceta, 291 limones etiquetados con cajas: 30 train / 10 valid / 10 test |
 
 Estructura de `datos_limon.zip`:
 

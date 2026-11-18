@@ -1,0 +1,10 @@
+feature,grupo,limones,recobrado
+tamaño,chico,6,0.667
+tamaño,mediano,93,0.892
+tamaño,grande,17,0.941
+brillo del limón,oscuro,19,0.789
+brillo del limón,medio,34,0.853
+brillo del limón,claro,63,0.937
+limones en la foto,hasta 4,8,1.0
+limones en la foto,5 o 6,73,0.863
+limones en la foto,7 o más,35,0.914

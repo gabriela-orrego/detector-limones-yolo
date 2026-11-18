@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabriela Belén Orrego Arzamendia · Detector de limones con YOLO</title>
+<meta name="description" content="Portafolio de Gabriela Belén Orrego Arzamendia, estudiante de Ingeniería Mecatrónica en la FIUNA: proyecto de inteligencia artificial para detectar limones con YOLO.">
+<style>
+  :root {
+    --fondo: #fbfaf4;
+    --tinta: #1d2a22;
+    --suave: #5a6a60;
+    --verde: #2f6b4a;
+    --limon: #f1c40f;
+    --limon-claro: #fdf3c4;
+    --borde: #e3e0d0;
+    --tarjeta: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--fondo); color: var(--tinta);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6;
+  }
+  a { color: var(--verde); }
+  .envoltorio { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  nav { position: sticky; top: 0; z-index: 5; background: rgba(251,250,244,.92); backdrop-filter: blur(6px);
+        border-bottom: 1px solid var(--borde); }
+  nav .envoltorio { display: flex; gap: 22px; padding-top: 12px; padding-bottom: 12px; flex-wrap: wrap; }
+  nav a { text-decoration: none; color: var(--suave); font-size: .95rem; font-weight: 500; }
+  nav a:hover { color: var(--tinta); }
+
+  header.inicio { padding: 72px 0 56px; }
+  .inicio .envoltorio { display: grid; grid-template-columns: 1fr 220px; gap: 48px; align-items: center; }
+  .etiqueta { display: inline-block; background: var(--limon-claro); border: 1px solid var(--limon); color: #5c4a00;
+              border-radius: 999px; padding: 2px 12px; font-size: .85rem; font-weight: 600; }
+  h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin: 14px 0 8px; }
+  .titulo { font-size: 1.2rem; color: var(--verde); font-weight: 600; margin: 0 0 18px; }
+  .foto { width: 220px; height: 220px; border-radius: 50%; border: 6px solid var(--limon); position: relative; overflow: hidden;
+          background: var(--limon-claro); display: flex; align-items: center; justify-content: center;
+          font-size: 4rem; font-weight: 700; color: var(--verde); }
+  .foto svg { width: 100%; height: 100%; display: block; }
+  .foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  section { padding: 48px 0; border-top: 1px solid var(--borde); }
+  h2 { font-size: 1.6rem; margin: 0 0 20px; }
+  h2::after { content: ""; display: block; width: 48px; height: 4px; background: var(--limon); border-radius: 2px; margin-top: 8px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .chips li { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 8px; padding: 6px 14px; font-size: .95rem; }
+
+  .linea { border-left: 3px solid var(--limon); padding: 2px 0 2px 18px; }
+  .linea h3 { margin: 0; font-size: 1.1rem; }
+  .linea p { margin: 2px 0 0; color: var(--suave); }
+
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 26px; }
+  .tarjeta { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 12px; padding: 22px; }
+  .aviso { background: var(--limon-claro); border-left: 4px solid var(--limon); border-radius: 6px; padding: 10px 14px; font-size: .92rem; }
+  .tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+  .tres h3 { margin: 0 0 6px; font-size: 1rem; color: var(--verde); }
+  .tres p { margin: 0; font-size: .95rem; }
+  .metricas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 22px 0 6px; }
+  .metrica { background: var(--limon-claro); border-radius: 10px; padding: 12px; text-align: center; }
+  .metrica b { display: block; font-size: 1.6rem; }
+  .metrica span { font-size: .8rem; color: var(--suave); }
+  .nota { font-size: .85rem; color: var(--suave); margin: 6px 0 0; }
+  .figuras { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-top: 20px; align-items: start; }
+  figure { margin: 0; }
+  figure img { width: 100%; height: auto; border: 1px solid var(--borde); border-radius: 8px; background: #fff; }
+  figcaption { font-size: .85rem; color: var(--suave); margin-top: 6px; }
+  .boton { display: inline-block; margin-top: 18px; background: var(--verde); color: #fff; text-decoration: none;
+           padding: 10px 20px; border-radius: 8px; font-weight: 600; }
+  .boton:hover { background: #245339; }
+
+  .contacto { display: flex; flex-wrap: wrap; gap: 14px; }
+  .contacto a { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 10px; padding: 10px 18px;
+                text-decoration: none; font-weight: 600; }
+  .contacto a:hover { border-color: var(--verde); }
+
+  footer { padding: 28px 0 40px; color: var(--suave); font-size: .85rem; border-top: 1px solid var(--borde); }
+
+  /* Texto pendiente de completar: borrar esta clase (y el borde) cuando pongas tus datos. */
+  .falta { background: #ffe4e1; border-bottom: 2px dashed #d9534f; }
+
+  @media (max-width: 720px) {
+    .inicio .envoltorio { grid-template-columns: 1fr; text-align: center; }
+    .foto { margin: 0 auto; order: -1; width: 170px; height: 170px; font-size: 3rem; }
+    .tres, .metricas, .figuras { grid-template-columns: 1fr 1fr; }
+    .tres, .figuras, .dos { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="envoltorio">
+    <a href="#inicio">Inicio</a>
+    <a href="#habilidades">Habilidades</a>
+    <a href="#educacion">Educación</a>
+    <a href="#proyecto">Proyecto</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+</nav>
+
+<header class="inicio" id="inicio">
+  <div class="envoltorio">
+    <div>
+      <span class="etiqueta">Inteligencia Artificial · FIUNA 2026</span>
+      <h1>Gabriela Belén Orrego Arzamendia</h1>
+      <p class="titulo">Estudiante de Ingeniería Mecatrónica</p>
+      <p>
+        Soy estudiante de Ingeniería Mecatrónica en la FIUNA. Me gusta aprender cosas nuevas todo el tiempo,
+        y por eso me muevo entre el diseño mecánico, la electrónica y la programación. En este proyecto entrené
+        y optimicé un detector de objetos para que un robot recolector encuentre limones en un limonero.
+      </p>
+    </div>
+    <div class="foto" aria-label="Foto de perfil">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Dibujo de un limón dentro de la caja de detección de YOLO">
+        <rect width="200" height="200" fill="#fdf3c4"/>
+        <g transform="rotate(-25 100 106)" stroke="#d4a900" stroke-width="2" fill="#f1c40f">
+          <ellipse cx="100" cy="106" rx="46" ry="34"/>
+          <path d="M54 106 q-9 -3 -11 2 q2 5 11 3 z"/>
+          <path d="M146 106 q9 -3 11 2 q-2 5 -11 3 z"/>
+        </g>
+        <path d="M112 78 q22 -22 42 -12 q-8 24 -42 12 z" fill="#2f6b4a"/>
+        <rect x="46" y="64" width="108" height="86" rx="3" fill="none" stroke="#2f6b4a" stroke-width="3" stroke-dasharray="7 4"/>
+        <rect x="46" y="46" width="52" height="18" fill="#2f6b4a"/>
+        <text x="52" y="59" font-size="11" fill="#fff" font-family="system-ui, sans-serif" font-weight="600">limon</text>
+      </svg>
+      <img src="foto.jpg" alt="Foto de Gabriela Belén Orrego Arzamendia" onerror="this.remove()">
+    </div>
+  </div>
+</header>
+
+<main class="envoltorio">
+
+  <section id="habilidades">
+    <h2>Habilidades</h2>
+    <ul class="chips">
+      <li>Python</li><li>MATLAB</li><li>SolidWorks</li><li>KiCad (en práctica)</li>
+      <li>Machine Learning</li><li>Visión artificial</li><li>Detección de objetos (YOLO)</li>
+      <li>Optimización de hiperparámetros (Optuna)</li><li>Pandas</li><li>OpenCV</li><li>Matplotlib</li>
+      <li>Google Colab</li><li>Git y GitHub</li>
+    </ul>
+  </section>
+
+  <section id="educacion">
+    <h2>Educación</h2>
+    <div class="linea">
+      <h3>Ingeniería Mecatrónica</h3>
+      <p>Facultad de Ingeniería, Universidad Nacional de Asunción (FIUNA) · en curso</p>
+    </div>
+    <div class="dos">
+      <div class="linea">
+        <h3>Cursos</h3>
+        <p>Soldadura<br>Seguridad industrial y salud ocupacional</p>
+      </div>
+      <div class="linea">
+        <h3>Idiomas</h3>
+        <p>Inglés<br>Alemán (en aprendizaje)</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="proyecto">
+    <h2>Proyecto de Inteligencia Artificial</h2>
+    <div class="tarjeta">
+      <h3 style="margin-top:0;font-size:1.3rem">Detector de limones con YOLO para un robot recolector</h3>
+      <p>
+        Una red neuronal que encuentra limones amarillos en la imagen de la cámara de un robot recolector, para que
+        el brazo sepa adónde ir. Se entrenó, se optimizó con Optuna y se analizaron sus errores. Está pensado y
+        validado para un ambiente controlado (un limonero en maceta).
+      </p>
+      <p class="aviso">
+        <b>Origen del trabajo.</b> El detector parte del proyecto grupal de Robótica 1 (Grupo 2, FIUNA), del que formo parte: de ahí
+        vienen el robot, las fotos propias del limonero con sus etiquetas y la versión 3 del detector. Para esta
+        materia reorganicé el proyecto y sumé la generación de features, la optimización de hiperparámetros con
+        Optuna y el análisis de errores.
+      </p>
+
+      <div class="tres">
+        <div>
+          <h3>Dataset</h3>
+          <p>915 imágenes públicas de limones en el árbol (Roboflow Universe) más 50 fotos propias del
+             limonero, etiquetadas por el grupo. Se generaron 4 features por limón: tamaño, forma, color y densidad.</p>
+        </div>
+        <div>
+          <h3>Modelo</h3>
+          <p>YOLO26n (Ultralytics) con transfer learning desde COCO. Los hiperparámetros se buscaron con
+             Optuna: 12 pruebas sobre tasa de aprendizaje, regularización, aumento de datos y peso de las fotos propias.</p>
+        </div>
+        <div>
+          <h3>Visualización</h3>
+          <p>Curvas de entrenamiento, matriz de confusión, histogramas de errores y análisis de fallas
+             según el tamaño y el color del limón.</p>
+        </div>
+      </div>
+
+      <div class="metricas">
+        <div class="metrica"><b>0,96</b><span>Precisión</span></div>
+        <div class="metrica"><b>0,95</b><span>Recobrado</span></div>
+        <div class="metrica"><b>0,73</b><span>mAP50-95</span></div>
+        <div class="metrica"><b>0,83</b><span>mAP50-95 en validación tras optimizar</span></div>
+      </div>
+      <p class="nota">
+        Modelo optimizado, sobre las 10 fotos de test (58 limones), que no se usaron para elegir nada. La optimización llevó el recobrado de 0,86 a 0,95; el mAP50-95 casi no cambió (0,72 a 0,73). Con tan pocas imágenes de prueba, las métricas son orientativas.
+      </p>
+
+      <div class="figuras">
+        <figure>
+          <img src="results/fig_curvas_entrenamiento.png" alt="Curvas de pérdida y métricas durante el entrenamiento" loading="lazy">
+          <figcaption>Curvas de entrenamiento del modelo optimizado (60 épocas).</figcaption>
+        </figure>
+        <figure>
+          <img src="results/fig_matriz_confusion.png" alt="Matriz de confusión del detector" loading="lazy">
+          <figcaption>Matriz de confusión del modelo optimizado (20 fotos).</figcaption>
+        </figure>
+      </div>
+
+      <a class="boton" href="https://github.com/gabriela-orrego/detector-limones-yolo">Ver el repositorio en GitHub</a>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <h2>Contacto</h2>
+    <div class="contacto">
+      <a href="https://github.com/gabriela-orrego">GitHub</a>
+      <a href="mailto:gorrego@fiuna.edu.py">gorrego@fiuna.edu.py</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="envoltorio">Inteligencia Artificial · FIUNA · 2026. Basado en el trabajo grupal de Robótica 1 (Grupo 2).</div>
+</footer>
+
+</body>
+</html>

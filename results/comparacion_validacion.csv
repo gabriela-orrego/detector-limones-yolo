@@ -1,0 +1,3 @@
+modelo,conjunto,imágenes,precisión,recobrado,F1,mAP50,mAP50-95
+base,valid,10,1.0,0.923,0.96,0.974,0.778
+optimizado,valid,10,0.982,0.966,0.974,0.992,0.811

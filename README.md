@@ -3,7 +3,7 @@
 Proyecto de la materia Inteligencia Artificial. Entrena y optimiza una red **YOLO26n** que detecta limones
 amarillos en la imagen de la cámara de un robot recolector, y analiza sus errores.
 
-> **Origen del trabajo.** El detector nace del trabajo grupal de Robótica 1 y 2 (Grupo 2, FIUNA, 2026): el
+> **Origen del trabajo.** El detector nace del trabajo grupal de Robótica 1 (Grupo 2, FIUNA, 2026), del que formo parte: el
 > robot «Arturito R2D2», repositorio [HecVelaz/recolector_de_frutas](https://github.com/HecVelaz/recolector_de_frutas).
 > De ahí vienen el dataset propio, la limpieza de los datos y la configuración del modelo base (versión 3 del
 > detector). Para Inteligencia Artificial se reorganizó ese trabajo y se agregaron la generación de features,
@@ -38,7 +38,7 @@ amarillos, al aire libre, en el patio de la facultad. No se probó en un cultivo
 | Dataset | Fuente | Qué aporta |
 |---|---|---|
 | Base | [brinjalproject/lemons-segmentation](https://universe.roboflow.com/brinjalproject/lemons-segmentation) (Roboflow Universe, v5) | 915 imágenes públicas de limones amarillos en el árbol (1 315 limones). Solo para entrenar |
-| Propio | [limones-amarillos](https://universe.roboflow.com/hectors-workspace-e5dhh/limones-amarillos) (Roboflow Universe, v3, CC BY 4.0) | 50 fotos del limonero del laboratorio, sacadas con celular y etiquetadas por el grupo (244 limones): 30 para entrenar, 10 para validar y 10 de test |
+| Propio | [limones-amarillos](https://universe.roboflow.com/hectors-workspace-e5dhh/limones-amarillos) (Roboflow Universe, v3, CC BY 4.0) | 50 fotos del limonero del laboratorio, sacadas con celular y etiquetadas por el grupo (291 limones): 30 para entrenar, 10 para validar y 10 de test |
 
 **Preprocesamiento** (notebook 01):
 
@@ -73,7 +73,8 @@ hiperparámetros de aumento de datos optimizar y para ver en qué tipo de limón
 
 ## Optimización de hiperparámetros
 
-Con **Optuna** (búsqueda bayesiana, TPE): 12 entrenamientos de hasta 30 épocas. Se maximiza el **mAP50-95**
+Con **Optuna** (búsqueda bayesiana, TPE): 12 entrenamientos de hasta 30 épocas. Las primeras 5 pruebas
+exploran el espacio y las 7 siguientes las guía el algoritmo con lo aprendido. Se maximiza el **mAP50-95**
 sobre las 10 fotos propias de validación y se registran precisión, recobrado, F1, mAP50 y mAP50-95 de cada
 prueba en `results/optuna_pruebas.csv`. La primera prueba usa los valores del modelo base, como referencia.
 
@@ -110,8 +111,42 @@ detecciones de más, casi todas el mismo limón marcado dos veces.
 
 ### Modelo optimizado
 
-Pendiente: se completa al correr los notebooks 03 y 04. Las tablas quedan en `results/comparacion_modelos.csv`
-y las figuras en `results/` (archivos `fig_*`).
+**Búsqueda (Optuna, 12 pruebas, mAP50-95 sobre las 10 fotos de validación).** Ganó la prueba 11 (`lr0` = 0,00046,
+`weight_decay` = 0,00013, `hsv_h` = 0,015, `scale` = 0,85, `repetir` = 5) con 0,830, contra 0,756 de la prueba 0
+(valores base). Las mejores pruebas tienen `lr0` bajo y `scale` alto. Todas las pruebas están en
+[`results/optuna_pruebas.csv`](results/optuna_pruebas.csv) y los mejores valores en
+[`results/mejores_hiperparametros.json`](results/mejores_hiperparametros.json).
+
+![Búsqueda de hiperparámetros](results/fig_optuna.png)
+
+**Base contra optimizado** (entrenamiento final de 60 épocas; mejor época: 56):
+
+| Modelo | Conjunto | Imágenes | Precisión | Recobrado | mAP50 | mAP50-95 |
+|---|---|:---:|:---:|:---:|:---:|:---:|
+| Base | test | 10 | 0,960 | 0,862 | 0,938 | 0,723 |
+| **Optimizado** | **test** | 10 | **0,963** | **0,948** | **0,967** | **0,729** |
+| Base | valid + test | 20 | 0,929 | 0,922 | 0,952 | 0,746 |
+| Optimizado | valid + test | 20 | 0,956 | 0,966 | 0,983 | 0,762 |
+
+La validación se usó para elegir los hiperparámetros, así que **test es la cifra más honesta**. Ahí la mejora está
+sobre todo en el recobrado (0,862 a 0,948); en mAP50-95 es de 0,006, que con 58 limones no es una diferencia
+confiable. Se cumple el requisito de precisión y recobrado ≥ 0,80.
+
+![Curvas de entrenamiento](results/fig_curvas_entrenamiento.png)
+
+### Análisis de errores (notebook 04)
+
+- Sobre las 20 fotos (116 limones; confianza ≥ 0,40, IoU ≥ 0,5): 103 aciertos, 4 falsos positivos y 13 limones no
+  detectados (con ese umbral fijo el recobrado es 0,888; la tabla usa el umbral que maximiza F1).
+- IoU medio de los aciertos 0,89; error mediano del centro de la caja 2,4 % del lado del limón.
+- Exacta la cuenta de limones en 10 de 20 fotos; en 8 se cuenta uno de menos.
+- Recobrado más bajo en limones **chicos** (0,67; solo 6 casos), **oscuros** (0,79) y en fotos de 5 o 6 limones (0,86).
+
+![Matriz de confusión](results/fig_matriz_confusion.png)
+
+![Histogramas de error](results/fig_histogramas_error.png)
+
+![Predicciones](results/fig_predicciones.jpg)
 
 ## Cómo reproducirlo
 
