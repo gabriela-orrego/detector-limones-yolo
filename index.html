@@ -7,14 +7,19 @@
 <meta name="description" content="Portafolio de Gabriela Belén Orrego Arzamendia, estudiante de Ingeniería Mecatrónica en la FIUNA: proyecto de inteligencia artificial para detectar limones con YOLO.">
 <style>
   :root {
-    --fondo: #fbfaf4;
-    --tinta: #1d2a22;
-    --suave: #5a6a60;
-    --verde: #2f6b4a;
-    --limon: #f1c40f;
-    --limon-claro: #fdf3c4;
-    --borde: #e3e0d0;
+    --fondo: #fff9ec;
+    --tinta: #1b1f3b;
+    --suave: #4f5373;
+    --amarillo: #ffc93c;
+    --amarillo-claro: #ffefba;
+    --coral: #ff6b6b;
+    --coral-claro: #ffe0dd;
+    --turquesa: #007c7c;
+    --turquesa-claro: #d3f1ee;
+    --violeta: #5b3fb0;
+    --violeta-claro: #e6defa;
     --tarjeta: #ffffff;
+    --borde: #ebe3cf;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -22,72 +27,107 @@
     margin: 0; background: var(--fondo); color: var(--tinta);
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6;
   }
-  a { color: var(--verde); }
-  .envoltorio { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--violeta); }
+  .envoltorio { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
 
-  nav { position: sticky; top: 0; z-index: 5; background: rgba(251,250,244,.92); backdrop-filter: blur(6px);
-        border-bottom: 1px solid var(--borde); }
-  nav .envoltorio { display: flex; gap: 22px; padding-top: 12px; padding-bottom: 12px; flex-wrap: wrap; }
-  nav a { text-decoration: none; color: var(--suave); font-size: .95rem; font-weight: 500; }
-  nav a:hover { color: var(--tinta); }
+  nav { position: sticky; top: 0; z-index: 5; background: rgba(255,249,236,.94); backdrop-filter: blur(6px);
+        border-bottom: 3px solid var(--amarillo); }
+  nav .envoltorio { display: flex; gap: 8px; padding-top: 10px; padding-bottom: 10px; flex-wrap: wrap; }
+  nav a { text-decoration: none; color: var(--tinta); font-size: .95rem; font-weight: 600; padding: 4px 14px; border-radius: 999px; }
+  nav a:hover { background: var(--amarillo); }
 
-  header.inicio { padding: 72px 0 56px; }
-  .inicio .envoltorio { display: grid; grid-template-columns: 1fr 220px; gap: 48px; align-items: center; }
-  .etiqueta { display: inline-block; background: var(--limon-claro); border: 1px solid var(--limon); color: #5c4a00;
-              border-radius: 999px; padding: 2px 12px; font-size: .85rem; font-weight: 600; }
-  h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin: 14px 0 8px; }
-  .titulo { font-size: 1.2rem; color: var(--verde); font-weight: 600; margin: 0 0 18px; }
-  .foto { width: 220px; height: 220px; border-radius: 50%; border: 6px solid var(--limon); position: relative; overflow: hidden;
-          background: var(--limon-claro); display: flex; align-items: center; justify-content: center;
-          font-size: 4rem; font-weight: 700; color: var(--verde); }
+  header.inicio { background: linear-gradient(135deg, var(--amarillo) 0%, #ffa94d 55%, var(--coral) 100%); padding: 72px 0 64px; }
+  .inicio .envoltorio { display: grid; grid-template-columns: 1fr 230px; gap: 48px; align-items: center; }
+  .etiqueta { display: inline-block; background: var(--tinta); color: #fff; border-radius: 999px; padding: 3px 14px;
+              font-size: .85rem; font-weight: 600; }
+  h1 { font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.12; margin: 16px 0 8px; }
+  .titulo { font-size: 1.25rem; font-weight: 700; margin: 0 0 16px; }
+  .inicio p { max-width: 56ch; }
+  .foto { width: 230px; height: 230px; border-radius: 50%; border: 8px solid #fff; position: relative; overflow: hidden;
+          background: var(--amarillo-claro); box-shadow: 0 8px 0 var(--tinta); }
   .foto svg { width: 100%; height: 100%; display: block; }
   .foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-  section { padding: 48px 0; border-top: 1px solid var(--borde); }
-  h2 { font-size: 1.6rem; margin: 0 0 20px; }
-  h2::after { content: ""; display: block; width: 48px; height: 4px; background: var(--limon); border-radius: 2px; margin-top: 8px; }
+  section { padding: 52px 0 12px; }
+  h2 { font-size: 1.7rem; margin: 0 0 22px; display: inline-block; background: linear-gradient(transparent 62%, var(--amarillo) 62%); }
 
   .chips { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; margin: 0; list-style: none; }
-  .chips li { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 8px; padding: 6px 14px; font-size: .95rem; }
+  .chips li { border-radius: 999px; padding: 6px 16px; font-size: .95rem; font-weight: 600; border: 2px solid var(--tinta); }
+  .chips li:nth-child(4n+1) { background: var(--amarillo-claro); }
+  .chips li:nth-child(4n+2) { background: var(--coral-claro); }
+  .chips li:nth-child(4n+3) { background: var(--turquesa-claro); }
+  .chips li:nth-child(4n)   { background: var(--violeta-claro); }
 
-  .linea { border-left: 3px solid var(--limon); padding: 2px 0 2px 18px; }
+  .linea { background: var(--tarjeta); border: 2px solid var(--tinta); border-radius: 14px; padding: 16px 20px; box-shadow: 4px 4px 0 var(--turquesa); }
   .linea h3 { margin: 0; font-size: 1.1rem; }
-  .linea p { margin: 2px 0 0; color: var(--suave); }
+  .linea p { margin: 4px 0 0; color: var(--suave); }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 22px; }
+  .dos .linea:nth-child(1) { box-shadow: 4px 4px 0 var(--coral); }
+  .dos .linea:nth-child(2) { box-shadow: 4px 4px 0 var(--violeta); }
 
-  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 26px; }
-  .tarjeta { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 12px; padding: 22px; }
-  .aviso { background: var(--limon-claro); border-left: 4px solid var(--limon); border-radius: 6px; padding: 10px 14px; font-size: .92rem; }
-  .tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
-  .tres h3 { margin: 0 0 6px; font-size: 1rem; color: var(--verde); }
+  .tarjeta { background: var(--tarjeta); border: 2px solid var(--tinta); border-radius: 18px; padding: 28px; box-shadow: 6px 6px 0 var(--amarillo); }
+  .tarjeta h3.titulo-proyecto { margin: 0 0 8px; font-size: 1.4rem; }
+  .aviso { background: var(--violeta-claro); border-left: 6px solid var(--violeta); border-radius: 8px; padding: 12px 16px; font-size: .95rem; }
+  h3.sub { margin: 30px 0 12px; font-size: 1.15rem; }
+
+  .pasos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 0; margin: 0; list-style: none; counter-reset: paso; }
+  .pasos li { counter-increment: paso; border-radius: 12px; padding: 14px; font-size: .92rem; border: 2px solid var(--tinta); }
+  .pasos li::before { content: counter(paso); display: inline-block; width: 28px; height: 28px; line-height: 24px; text-align: center;
+                      border-radius: 50%; background: var(--tinta); color: #fff; font-weight: 700; margin-bottom: 6px; }
+  .pasos b { display: block; font-size: 1rem; }
+  .pasos li:nth-child(1) { background: var(--amarillo-claro); }
+  .pasos li:nth-child(2) { background: var(--coral-claro); }
+  .pasos li:nth-child(3) { background: var(--turquesa-claro); }
+  .pasos li:nth-child(4) { background: var(--violeta-claro); }
+
+  .tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 6px 0; }
+  .tres div { border-top: 5px solid var(--turquesa); padding-top: 8px; }
+  .tres div:nth-child(2) { border-color: var(--coral); }
+  .tres div:nth-child(3) { border-color: var(--violeta); }
+  .tres h3 { margin: 0 0 6px; font-size: 1.05rem; }
   .tres p { margin: 0; font-size: .95rem; }
-  .metricas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 22px 0 6px; }
-  .metrica { background: var(--limon-claro); border-radius: 10px; padding: 12px; text-align: center; }
-  .metrica b { display: block; font-size: 1.6rem; }
-  .metrica span { font-size: .8rem; color: var(--suave); }
-  .nota { font-size: .85rem; color: var(--suave); margin: 6px 0 0; }
-  .figuras { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; margin-top: 20px; align-items: start; }
+
+  .metricas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 8px 0 6px; }
+  .metrica { border-radius: 14px; padding: 14px 10px; text-align: center; border: 2px solid var(--tinta); }
+  .metrica b { display: block; font-size: 2rem; line-height: 1.2; }
+  .metrica span { font-size: .85rem; font-weight: 600; }
+  .metrica:nth-child(1) { background: var(--amarillo); }
+  .metrica:nth-child(2) { background: var(--coral-claro); }
+  .metrica:nth-child(3) { background: var(--turquesa-claro); }
+  .metrica:nth-child(4) { background: var(--violeta-claro); }
+  .nota { font-size: .88rem; color: var(--suave); margin: 8px 0 0; }
+
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; margin-top: 8px; }
+  th { background: var(--tinta); color: #fff; text-align: left; padding: 8px 12px; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--borde); }
+  td.mejor { font-weight: 700; background: var(--amarillo-claro); }
+
+  .figuras { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; margin-top: 16px; align-items: start; }
+  .figuras.pred { grid-template-columns: 1fr 1.3fr; }
   figure { margin: 0; }
-  figure img { width: 100%; height: auto; border: 1px solid var(--borde); border-radius: 8px; background: #fff; }
+  figure img { width: 100%; height: auto; border: 2px solid var(--tinta); border-radius: 10px; background: #fff; }
   figcaption { font-size: .85rem; color: var(--suave); margin-top: 6px; }
-  .boton { display: inline-block; margin-top: 18px; background: var(--verde); color: #fff; text-decoration: none;
-           padding: 10px 20px; border-radius: 8px; font-weight: 600; }
-  .boton:hover { background: #245339; }
+
+  .botones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .boton { display: inline-block; background: var(--tinta); color: #fff; text-decoration: none;
+           padding: 10px 22px; border-radius: 999px; font-weight: 700; border: 2px solid var(--tinta); }
+  .boton:hover { background: var(--violeta); border-color: var(--violeta); }
+  .boton.claro { background: #fff; color: var(--tinta); }
+  .boton.claro:hover { background: var(--amarillo); color: var(--tinta); border-color: var(--tinta); }
 
   .contacto { display: flex; flex-wrap: wrap; gap: 14px; }
-  .contacto a { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 10px; padding: 10px 18px;
-                text-decoration: none; font-weight: 600; }
-  .contacto a:hover { border-color: var(--verde); }
+  .contacto a { background: var(--tarjeta); border: 2px solid var(--tinta); border-radius: 999px; padding: 10px 22px;
+                text-decoration: none; font-weight: 700; color: var(--tinta); }
+  .contacto a:hover { background: var(--coral-claro); }
 
-  footer { padding: 28px 0 40px; color: var(--suave); font-size: .85rem; border-top: 1px solid var(--borde); }
+  footer { margin-top: 48px; background: var(--tinta); color: #e8e9f5; padding: 24px 0 32px; font-size: .9rem; }
 
-  /* Texto pendiente de completar: borrar esta clase (y el borde) cuando pongas tus datos. */
-  .falta { background: #ffe4e1; border-bottom: 2px dashed #d9534f; }
-
-  @media (max-width: 720px) {
+  @media (max-width: 760px) {
     .inicio .envoltorio { grid-template-columns: 1fr; text-align: center; }
-    .foto { margin: 0 auto; order: -1; width: 170px; height: 170px; font-size: 3rem; }
-    .tres, .metricas, .figuras { grid-template-columns: 1fr 1fr; }
-    .tres, .figuras, .dos { grid-template-columns: 1fr; }
+    .inicio p { margin-left: auto; margin-right: auto; }
+    .foto { margin: 0 auto; order: -1; width: 180px; height: 180px; }
+    .tres, .figuras, .figuras.pred, .dos { grid-template-columns: 1fr; }
+    .pasos, .metricas { grid-template-columns: 1fr 1fr; }
   }
 </style>
 </head>
@@ -117,15 +157,15 @@
     </div>
     <div class="foto" aria-label="Foto de perfil">
       <svg viewBox="0 0 200 200" role="img" aria-label="Dibujo de un limón dentro de la caja de detección de YOLO">
-        <rect width="200" height="200" fill="#fdf3c4"/>
-        <g transform="rotate(-25 100 106)" stroke="#d4a900" stroke-width="2" fill="#f1c40f">
+        <rect width="200" height="200" fill="#ffefba"/>
+        <g transform="rotate(-25 100 106)" stroke="#d4a900" stroke-width="2" fill="#ffc93c">
           <ellipse cx="100" cy="106" rx="46" ry="34"/>
           <path d="M54 106 q-9 -3 -11 2 q2 5 11 3 z"/>
           <path d="M146 106 q9 -3 11 2 q-2 5 -11 3 z"/>
         </g>
-        <path d="M112 78 q22 -22 42 -12 q-8 24 -42 12 z" fill="#2f6b4a"/>
-        <rect x="46" y="64" width="108" height="86" rx="3" fill="none" stroke="#2f6b4a" stroke-width="3" stroke-dasharray="7 4"/>
-        <rect x="46" y="46" width="52" height="18" fill="#2f6b4a"/>
+        <path d="M112 78 q22 -22 42 -12 q-8 24 -42 12 z" fill="#007c7c"/>
+        <rect x="46" y="64" width="108" height="86" rx="3" fill="none" stroke="#5b3fb0" stroke-width="3" stroke-dasharray="7 4"/>
+        <rect x="46" y="46" width="52" height="18" fill="#5b3fb0"/>
         <text x="52" y="59" font-size="11" fill="#fff" font-family="system-ui, sans-serif" font-weight="600">limon</text>
       </svg>
       <img src="foto.jpg" alt="Foto de Gabriela Belén Orrego Arzamendia" onerror="this.remove()">
@@ -166,7 +206,7 @@
   <section id="proyecto">
     <h2>Proyecto de Inteligencia Artificial</h2>
     <div class="tarjeta">
-      <h3 style="margin-top:0;font-size:1.3rem">Detector de limones con YOLO para un robot recolector</h3>
+      <h3 class="titulo-proyecto">Detector de limones con YOLO para un robot recolector</h3>
       <p>
         Una red neuronal que encuentra limones amarillos en la imagen de la cámara de un robot recolector, para que
         el brazo sepa adónde ir. Se entrenó, se optimizó con Optuna y se analizaron sus errores. Está pensado y
@@ -179,6 +219,15 @@
         Optuna y el análisis de errores.
       </p>
 
+      <h3 class="sub">Cómo se hizo</h3>
+      <ol class="pasos">
+        <li><b>Preprocesamiento</b>Limpieza de los datos y 4 features por limón.</li>
+        <li><b>Modelo base</b>YOLO26n entrenado y evaluado.</li>
+        <li><b>Optimización</b>12 pruebas con Optuna.</li>
+        <li><b>Visualización</b>Predicciones, curvas, matriz de confusión y errores.</li>
+      </ol>
+
+      <h3 class="sub">Datos y modelo</h3>
       <div class="tres">
         <div>
           <h3>Dataset</h3>
@@ -197,6 +246,7 @@
         </div>
       </div>
 
+      <h3 class="sub">Resultados</h3>
       <div class="metricas">
         <div class="metrica"><b>0,96</b><span>Precisión</span></div>
         <div class="metrica"><b>0,95</b><span>Recobrado</span></div>
@@ -204,8 +254,18 @@
         <div class="metrica"><b>0,83</b><span>mAP50-95 en validación tras optimizar</span></div>
       </div>
       <p class="nota">
-        Modelo optimizado, sobre las 10 fotos de test (58 limones), que no se usaron para elegir nada. La optimización llevó el recobrado de 0,86 a 0,95; el mAP50-95 casi no cambió (0,72 a 0,73). Con tan pocas imágenes de prueba, las métricas son orientativas.
+        Modelo optimizado, sobre las 10 fotos de test (58 limones), que no se usaron para elegir nada. Con tan pocas imágenes de prueba, las métricas son orientativas.
       </p>
+
+      <table>
+        <tr><th>Test (10 fotos)</th><th>Base</th><th>Optimizado</th></tr>
+        <tr><td>Precisión</td><td>0,960</td><td class="mejor">0,963</td></tr>
+        <tr><td>Recobrado</td><td>0,862</td><td class="mejor">0,948</td></tr>
+        <tr><td>F1</td><td>0,908</td><td class="mejor">0,956</td></tr>
+        <tr><td>mAP50</td><td>0,938</td><td class="mejor">0,967</td></tr>
+        <tr><td>mAP50-95</td><td>0,723</td><td class="mejor">0,729</td></tr>
+      </table>
+      <p class="nota">La optimización mejoró sobre todo el recobrado (de 0,86 a 0,95). En mAP50-95 la diferencia es de 0,006, demasiado chica para sostenerla con 58 limones.</p>
 
       <div class="figuras">
         <figure>
@@ -213,12 +273,26 @@
           <figcaption>Curvas de entrenamiento del modelo optimizado (60 épocas).</figcaption>
         </figure>
         <figure>
-          <img src="results/fig_matriz_confusion.png" alt="Matriz de confusión del detector" loading="lazy">
+          <img src="results/fig_matriz_confusion.png" alt="Matriz de confusión del detector: 103 aciertos, 13 no detectados y 4 detecciones de más" loading="lazy">
           <figcaption>Matriz de confusión del modelo optimizado (20 fotos).</figcaption>
         </figure>
       </div>
 
-      <a class="boton" href="https://github.com/gabriela-orrego/detector-limones-yolo">Ver el repositorio en GitHub</a>
+      <div class="figuras pred">
+        <figure>
+          <img src="results/fig_predicciones.jpg" alt="Tres fotos del limonero con las etiquetas reales a la izquierda y las predicciones del modelo a la derecha" loading="lazy">
+          <figcaption>Etiquetas reales (izquierda) y predicciones del modelo (derecha).</figcaption>
+        </figure>
+        <figure>
+          <img src="results/fig_histogramas_error.png" alt="Histogramas de IoU, error del centro, confianza y error de conteo" loading="lazy">
+          <figcaption>Errores del modelo: superposición de las cajas, error del centro, confianza y conteo por foto. Falla más con limones chicos y oscuros.</figcaption>
+        </figure>
+      </div>
+
+      <div class="botones">
+        <a class="boton" href="https://github.com/gabriela-orrego/detector-limones-yolo">Ver el repositorio en GitHub</a>
+        <a class="boton claro" href="https://github.com/gabriela-orrego/detector-limones-yolo/tree/main/notebooks">Ver los notebooks</a>
+      </div>
     </div>
   </section>
 
