@@ -148,6 +148,12 @@ confiable. Se cumple el requisito de precisión y recobrado ≥ 0,80.
 
 ![Predicciones](results/fig_predicciones.jpg)
 
+## Reporte técnico (formato IEEE)
+
+El artículo está en [`reporte/articulo.pdf`](reporte/articulo.pdf). Sigue la plantilla IEEE de conferencia
+(`IEEEtran`). El código fuente en LaTeX es `reporte/articulo.tex`, y se compila con `pdflatex` o se sube
+completo a [Overleaf](https://www.overleaf.com).
+
 ## Cómo reproducirlo
 
 Los notebooks están pensados para **Google Colab** y se corren en orden. Guardan todo en la carpeta
