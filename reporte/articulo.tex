@@ -26,7 +26,7 @@ gorrego@fiuna.edu.py}
 \maketitle
 
 \begin{abstract}
-Este trabajo presenta un detector de limones amarillos basado en YOLO26n para el sistema de visión de un robot recolector que opera en un ambiente controlado. Se parte de un dataset público de 915 imágenes y de 50 fotos propias de un limonero en maceta, de las que se generan cuatro características por limón: tamaño, forma, color y densidad. Se entrena un modelo base por transferencia de aprendizaje desde COCO y se optimizan cinco hiperparámetros con Optuna en 12 pruebas, maximizando el mAP50-95 en validación. En las 10 fotos de test, el modelo optimizado alcanza una precisión de 0,963, un recobrado de 0,948 y un mAP50-95 de 0,729, frente a 0,960, 0,862 y 0,723 del modelo base. La mejora se concentra en el recobrado; la de mAP50-95 no es concluyente con tan pocas imágenes. El modelo falla más con limones chicos y oscuros. Se discuten las limitaciones y el trabajo futuro.
+Este trabajo presenta un detector de limones amarillos basado en YOLO26n para el sistema de visión de un robot recolector que opera en un ambiente controlado. Se parte de un dataset público de 915 imágenes y de 50 fotos propias de un limonero en maceta, de las que se generan cuatro características por limón: tamaño, forma, color y densidad. Se entrena un modelo base por transferencia de aprendizaje desde COCO y se optimizan cinco hiperparámetros con Optuna en 12 pruebas, maximizando el mAP50-95 en validación. En las 10 fotos de test, el modelo optimizado alcanza una precisión de 0,963, un recobrado de 0,948 y un mAP50-95 de 0,729, frente a 0,960, 0,862 y 0,723 del modelo base. La mejora se concentra en el recobrado; la de mAP50-95 no es concluyente con tan pocas imágenes. El modelo falla más con limones chicos y oscuros. Además se comparan YOLO26n, YOLO11n y YOLO26s con los mismos hiperparámetros, en las fotos propias y en 100 fotos públicas apartadas del entrenamiento: las dos versiones pequeñas rinden parecido y YOLO26s ajusta mejor las cajas (mAP50-95 de 0,805 contra unos 0,75) con cuatro veces más parámetros. Se discuten las limitaciones y el trabajo futuro.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -104,6 +104,11 @@ Repeticiones fotos propias & 1, 3 o 5 & 3 & 5 \\
 \end{tabular}
 \end{table}
 
+\subsection{Comparación de versiones y test público}
+Siguiendo las sugerencias recibidas en la presentación, se comparan tres versiones de YOLO y se agrega un test con fotos públicas. Como el entrenamiento anterior usa las 915 imágenes públicas, para este experimento se apartan 100 fotos. Las imágenes del dataset provienen de Roboflow y una misma foto original puede dar varias imágenes; por eso el sorteo (semilla 0) se hace sobre las fotos originales: se deja una imagen de cada una para el test y se excluyen del entrenamiento todas sus variantes. El test público queda con 100 imágenes y 139 limones.
+
+Se entrenan YOLO26n, YOLO11n \cite{yolo11} y YOLO26s con los mismos datos (las imágenes públicas restantes y las 30 fotos propias repetidas cinco veces), la misma semilla, AdamW y los hiperparámetros que Optuna encontró para YOLO26n (Tabla~\ref{tab:espacio}), hasta 60 épocas con paciencia de 20. Los hiperparámetros no se reoptimizaron para cada versión. Cada modelo se evalúa en las 10 fotos propias de test y en las 100 fotos públicas apartadas. El modelo de la sección anterior se evalúa solo en las fotos propias, porque ya vio las públicas al entrenar. También se mide el tiempo de inferencia por imagen en la GPU y en la CPU de Google Colab.
+
 \subsection{Métricas de evaluación}
 Una detección es un acierto (verdadero positivo, VP) si su caja se superpone con la de un limón real aún no asignado con una intersección sobre unión $\mathrm{IoU}=|A\cap B|/|A\cup B|\ge 0,5$. Una detección sin limón real es un falso positivo (FP) y un limón real sin detectar es un falso negativo (FN). Con ellos,
 \begin{equation}
@@ -175,6 +180,39 @@ Optimizado & \textbf{0,963} & \textbf{0,948} & \textbf{0,956} & \textbf{0,967} &
 \end{tabular}
 \end{table}
 
+\subsection{Comparación de versiones de YOLO}
+La Tabla~\ref{tab:versiones} y la Fig.~\ref{fig:versiones} muestran los resultados. En las fotos propias, las tres versiones encuentran casi los mismos limones (mAP50 de 0,959 a 0,960; recobrado de 0,925 a 0,944, una diferencia de un limón sobre 58). YOLO26s tiene el mAP50-95 más alto (0,805 contra 0,754 y 0,749), lo que indica cajas más ajustadas a cada limón y no más limones detectados. Esta ventaja es una pista y no una prueba: hay una sola semilla, el test tiene 58 limones y los hiperparámetros están afinados para YOLO26n. YOLO26n y YOLO11n quedan prácticamente empatados. El YOLO26n entrenado sin las 100 fotos públicas rinde parecido al de la sección anterior en las fotos propias (mAP50-95 de 0,754 contra 0,729), así que apartarlas no empeoró el modelo.
+
+\begin{table*}[t]
+\caption{Versiones de YOLO con los mismos datos e hiperparámetros. Test propio: 10 fotos, 58 limones. Test público: 100 fotos apartadas, 139 limones. Los parámetros se cuentan antes de fusionar capas.}
+\label{tab:versiones}
+\centering
+\small
+\begin{tabular}{lcccccccc}
+\toprule
+& & \multicolumn{3}{c}{\textbf{Test propio}} & \multicolumn{3}{c}{\textbf{Test público}} & \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+\textbf{Modelo} & \textbf{Parám. (M)} & $P$ & $R$ & mAP50-95 & $P$ & $R$ & mAP50-95 & \textbf{Archivo (MB)} \\
+\midrule
+YOLO26n (sección anterior) & 2,5 & 0,963 & 0,948 & 0,729 & -- & -- & -- & 5,4 \\
+YOLO26n (sin las 100 fotos) & 2,5 & 0,946 & 0,931 & 0,754 & 0,632 & 0,544 & 0,382 & 5,4 \\
+YOLO11n & 2,6 & 0,947 & 0,925 & 0,749 & 0,603 & 0,622 & 0,382 & 5,5 \\
+YOLO26s & 9,95 & 0,948 & 0,944 & \textbf{0,805} & 0,528 & 0,719 & 0,367 & 20,3 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_versiones.png}
+\caption{mAP50-95 de cada versión en los dos conjuntos de test. «Anterior» es el modelo de la sección anterior, que no se evalúa en el test público porque ya vio esas fotos.}
+\label{fig:versiones}
+\end{figure}
+
+En las 100 fotos públicas las tres versiones dan entre 0,367 y 0,382 de mAP50-95, sin diferencias que las separen. Estos valores son más bajos que los de las fotos propias y no son comparables con ellos: los dos conjuntos tienen fotos y etiquetado distintos. Una causa probable, que no se verificó, es que el dataset público tenga limones sin etiquetar, que se cuentan como falsos positivos.
+
+Respecto del costo, YOLO26s tiene 9,95 millones de parámetros y su archivo pesa 20,3~MB, cuatro veces más que las versiones pequeñas. En la GPU de Colab las tres tardan entre 8,6 y 10,2~ms por imagen; en la CPU, YOLO26s tardó más del doble. Las mediciones en CPU variaron mucho entre corridas (el mismo YOLO26n dio 79 y 147~ms) y no se midió la velocidad en la Raspberry Pi 5, que es la que importa para el robot.
+
 \subsection{Predicciones y análisis de errores}
 La Fig.~\ref{fig:pred} muestra predicciones sobre fotos de test. La matriz de confusión de la Fig.~\ref{fig:matriz}, calculada sobre las 20 fotos de validación y test (116 limones) con un umbral de confianza de 0,40, tiene 103 aciertos, 13 limones no detectados y 4 detecciones de más; con ese umbral fijo el recobrado es 0,888. Los histogramas de la Fig.~\ref{fig:errores} muestran que las cajas están bien ajustadas (IoU medio de 0,89 y error mediano del centro de 2,4\,\% del lado del limón), que los falsos positivos son pocos y de confianza media, y que el modelo tiende a contar de menos: en 8 de las 20 fotos detecta un limón menos y en 10 el conteo es exacto.
 
@@ -226,9 +264,11 @@ Limones por foto & hasta 4 & 8 & 1,000 \\
 \section{Conclusiones}
 Se desarrolló un detector de limones amarillos con YOLO26n y se lo optimizó con Optuna. En las fotos de test alcanza una precisión de 0,963 y un recobrado de 0,948, por lo que cumple el criterio de 0,80 del robot. La optimización mejoró el recobrado de 0,862 a 0,948; la mejora del mAP50-95 en test, de 0,006, no es concluyente. Las cajas son precisas y el modelo falla sobre todo con limones chicos, oscuros y en racimos de 5 o 6, donde suele contar un limón de menos.
 
-Las limitaciones son varias. El test tiene 10 fotos del mismo árbol y del mismo día que las de entrenamiento, así que las métricas son optimistas y varían mucho. Las fotos son de celular y el robot usa otras cámaras. La búsqueda tiene solo 12 pruebas con una semilla cada una. El dataset público parece incluir imágenes ilustradas o generadas, que se usaron solo para entrenar. Por último, el detector solo sirve para limones amarillos en un ambiente controlado, un limonero en maceta.
+Al comparar tres versiones de YOLO con los mismos datos e hiperparámetros, YOLO26n y YOLO11n rinden parecido en las fotos propias y en 100 fotos públicas apartadas. YOLO26s ajusta mejor las cajas en las fotos propias (mAP50-95 de 0,805 contra unos 0,75) a cambio de cuatro veces más parámetros; la diferencia es una pista y no una prueba. Con estos resultados no se puede afirmar que YOLO26n sea la mejor versión: se lo prefiere por ser mucho más liviano para la Raspberry Pi, algo que falta comprobar midiendo en el robot.
 
-Como trabajo futuro se propone reunir fotos con la cámara del robot y con distinta iluminación, usar un conjunto de test más grande y varias semillas para medir mejor las diferencias, incluir limones verdes y enfermos, e integrar el detector con el brazo midiendo el tiempo de respuesta en el hardware del robot.
+Las limitaciones son varias. El test tiene 10 fotos del mismo árbol y del mismo día que las de entrenamiento, así que las métricas son optimistas y varían mucho. Las fotos son de celular y el robot usa otras cámaras. La búsqueda tiene solo 12 pruebas con una semilla cada una, y la comparación de versiones usa los hiperparámetros afinados para YOLO26n. El dataset público parece incluir imágenes ilustradas o generadas, que se usaron solo para entrenar. Por último, el detector solo sirve para limones amarillos en un ambiente controlado, un limonero en maceta.
+
+Como trabajo futuro se propone reunir fotos con la cámara del robot y con distinta iluminación, usar un conjunto de test más grande y varias semillas para medir mejor las diferencias, optimizar cada versión de YOLO por separado, incluir limones verdes y enfermos, e integrar el detector con el brazo midiendo el tiempo de respuesta en el hardware del robot.
 
 \section*{Agradecimientos}
 La autora agradece a sus compañeros del Grupo 2 de Robótica 1, con quienes se desarrolló el proyecto original del que proviene la parte de visión, y a los profesores de la asignatura Inteligencia Artificial, Dr. Diego Stalder e Ing. Enrique Paiva.
@@ -240,6 +280,7 @@ La autora agradece a sus compañeros del Grupo 2 de Robótica 1, con quienes se 
 \bibitem{koirala2019} A. Koirala, K. B. Walsh, Z. Wang, and C. McCarthy, ``Deep learning -- Method overview and review of use for fruit detection and yield estimation,'' \textit{Comput. Electron. Agric.}, vol. 162, pp. 219--234, 2019.
 \bibitem{redmon2016} J. Redmon, S. Divvala, R. Girshick, and A. Farhadi, ``You only look once: Unified, real-time object detection,'' in \textit{Proc. IEEE Conf. Comput. Vis. Pattern Recognit. (CVPR)}, 2016, pp. 779--788.
 \bibitem{yolo26} Ultralytics, ``YOLO26,'' Ultralytics Docs. [Online]. Available: \url{https://docs.ultralytics.com/models/yolo26/}
+\bibitem{yolo11} Ultralytics, ``YOLO11,'' Ultralytics Docs. [Online]. Available: \url{https://docs.ultralytics.com/models/yolo11/}
 \bibitem{pan2010} S. J. Pan and Q. Yang, ``A survey on transfer learning,'' \textit{IEEE Trans. Knowl. Data Eng.}, vol. 22, no. 10, pp. 1345--1359, Oct. 2010.
 \bibitem{bergstra2011} J. Bergstra, R. Bardenet, Y. Bengio, and B. K\'egl, ``Algorithms for hyper-parameter optimization,'' in \textit{Adv. Neural Inf. Process. Syst. (NIPS)}, vol. 24, 2011, pp. 2546--2554.
 \bibitem{akiba2019} T. Akiba, S. Sano, T. Yanase, T. Ohta, and M. Koyama, ``Optuna: A next-generation hyperparameter optimization framework,'' in \textit{Proc. 25th ACM SIGKDD Int. Conf. Knowl. Discovery Data Mining}, 2019, pp. 2623--2631.

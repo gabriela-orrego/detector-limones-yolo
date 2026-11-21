@@ -26,7 +26,8 @@ amarillos, al aire libre, en el patio de la facultad. No se probó en un cultivo
 │   ├── 01_preprocesamiento.ipynb   limpieza, unificación y generación de features
 │   ├── 02_entrenamiento.ipynb      modelo base y evaluación preliminar
 │   ├── 03_optimizacion.ipynb       búsqueda de hiperparámetros con Optuna
-│   └── 04_visualizacion.ipynb      predicciones, curvas, matriz de confusión e histogramas de errores
+│   ├── 04_visualizacion.ipynb      predicciones, curvas, matriz de confusión e histogramas de errores
+│   └── 05_comparacion_modelos.ipynb  comparación de versiones de YOLO y test con fotos públicas apartadas
 ├── results/              tablas CSV y figuras que generan los notebooks
 │   └── referencia_v3/    resultados de la corrida del grupo de Robótica (12/11/2026)
 ├── requirements.txt
@@ -148,6 +149,45 @@ confiable. Se cumple el requisito de precisión y recobrado ≥ 0,80.
 
 ![Predicciones](results/fig_predicciones.jpg)
 
+### Comparación de versiones de YOLO y test con fotos públicas (notebook 05)
+
+Dos sugerencias de los profesores: probar otras versiones de YOLO y evaluar también con fotos del dataset público.
+Como los notebooks 02 y 03 entrenan con las 915 fotos públicas, acá se **apartan 100 fotos públicas** (sorteo por
+foto original, semilla 0, para que ninguna variante de esas fotos quede en el entrenamiento; la lista está en
+[`results/fotos_apartadas.csv`](results/fotos_apartadas.csv)) y se entrenan tres versiones con los mismos datos, la
+misma semilla, AdamW y los hiperparámetros que Optuna encontró para `yolo26n`. El modelo de los notebooks 02 y 03 no
+se toca y solo se evalúa en las fotos propias, porque ya vio las públicas.
+
+Test propio: 10 fotos, 58 limones. Test público: 100 fotos apartadas, 139 limones.
+
+| Modelo | Test propio: P / R / mAP50-95 | Test público: P / R / mAP50-95 | Parámetros | Tamaño |
+|---|---|---|---|---|
+| `yolo26n` (notebook 03) | 0,963 / 0,948 / 0,729 | no se evalúa (vio esas fotos) | 2,5 M | 5,4 MB |
+| `yolo26n` (nuevo, sin las 100 fotos) | 0,946 / 0,931 / 0,754 | 0,632 / 0,544 / 0,382 | 2,5 M | 5,4 MB |
+| `yolo11n` | 0,947 / 0,925 / 0,749 | 0,603 / 0,622 / 0,382 | 2,59 M | 5,5 MB |
+| `yolo26s` | 0,948 / 0,944 / 0,805 | 0,528 / 0,719 / 0,367 | 9,95 M | 20,3 MB |
+
+Tabla completa en [`results/comparacion_versiones.csv`](results/comparacion_versiones.csv) y gráfico en
+[`results/fig_comparacion_versiones.png`](results/fig_comparacion_versiones.png).
+
+- **Fotos propias:** las tres versiones encuentran casi los mismos limones (mAP50 de 0,959 a 0,960; recobrado de 0,925 a
+  0,944, una diferencia de un limón sobre 58). `yolo26s` tiene el mAP50-95 más alto (0,805 contra 0,749 y 0,754), lo que
+  indica cajas más ajustadas a cada limón, no más limones detectados.
+- **Fotos públicas:** las tres versiones dan entre 0,367 y 0,382 de mAP50-95; las diferencias no alcanzan para
+  separarlas. Los valores son bajos para todas. Una causa probable es que el dataset público tiene limones sin etiquetar (ver Limitaciones),
+  que se cuentan como falsos positivos; sea cual sea la causa, estos números no se pueden comparar con los de las fotos propias.
+- **Costo:** `yolo26s` tiene cuatro veces más parámetros y su archivo pesa cuatro veces más que los modelos `n`. En la
+  CPU de Colab tardó más del doble por imagen (en la GPU las tres versiones están cerca de los 10 ms). Las
+  velocidades de CPU varían mucho de una medición a otra (el mismo `yolo26n` dio 79 y 147 ms), así que sirven solo
+  como orden de magnitud. **No se midió la velocidad en la Raspberry Pi 5.**
+- **`yolo26n` nuevo contra el del notebook 03:** en las fotos propias dan resultados parecidos (mAP50-95 0,754 contra
+  0,729), así que sacar 100 fotos públicas del entrenamiento no empeoró el modelo.
+
+**Cómo leerlo.** Una sola semilla, 10 fotos propias de test y hiperparámetros afinados para `yolo26n` (no para las
+otras versiones): la ventaja de `yolo26s` en mAP50-95 es una pista, no una prueba, y no alcanza para decir que
+`yolo26n` sea la mejor versión. La elección de `yolo26n` se apoya en que es mucho más liviano para la Raspberry Pi, una
+razón que falta comprobar midiendo en el robot.
+
 ## Reporte técnico (formato IEEE)
 
 El artículo está en [`reporte/articulo.pdf`](reporte/articulo.pdf). Sigue la plantilla IEEE de conferencia
@@ -159,13 +199,15 @@ completo a [Overleaf](https://www.overleaf.com).
 Los notebooks están pensados para **Google Colab** y se corren en orden. Guardan todo en la carpeta
 `limon_ia` de Google Drive, con la misma estructura que este repositorio (`data/`, `results/`, `runs/`).
 
-1. Subir los cuatro notebooks a Colab.
+1. Subir los cinco notebooks a Colab.
 2. Crear una cuenta gratis en [roboflow.com](https://roboflow.com), copiar la API key (*Settings → API Keys*) y
    guardarla como secreto de Colab con el nombre `ROBOFLOW_API_KEY`.
 3. Correr `01_preprocesamiento` (sin GPU, unos minutos).
 4. En los demás, elegir *Entorno de ejecución → Cambiar tipo de entorno de ejecución → GPU (T4)* y correr:
    `02_entrenamiento` (unos 15 minutos), `03_optimizacion` (unas 2 horas; si se corta, se vuelve a correr y
    continúa) y `04_visualizacion` (unos minutos).
+   Después, `05_comparacion_modelos` (tres entrenamientos, 15 a 25 minutos cada uno; si se corta, se vuelve a
+   correr y salta lo que ya terminó). Necesita `data/datos_limon.zip` de Drive; no hace falta repetir la búsqueda.
 5. Bajar de Drive la carpeta `limon_ia/results` y copiarla en `results/` del repositorio.
 
 Fuera de Colab: `pip install -r requirements.txt`, definir la variable de entorno `ROBOFLOW_API_KEY` y abrir
@@ -197,6 +239,8 @@ Los números de v2 y v3 no son comparables entre sí: se midieron con imágenes 
 - Sumar fotos tomadas con las cámaras del robot, en otros días y con otra luz, y usarlas como test.
 - Filtrar las detecciones duplicadas del mismo limón.
 - Medir la velocidad del modelo en la Raspberry Pi 5.
+- Optimizar con Optuna cada versión por separado (en el notebook 05 todas usan los hiperparámetros de `yolo26n`).
+- Repetir la comparación con varias semillas y con más fotos propias de test.
 
 ## Referencias
 
